@@ -1,26 +1,18 @@
+App = Ember.Application.create({
+  LOG_TRANSITIONS: true
+});
 
+//App.ApplicationAdapter = DS.FixtureAdapter.extend();
+App.ApplicationAdapter = DS.RESTAdapter.extend({
+  host: 'http://localhost:3002',
+  namespace: 'api/v1',
+  headers: {"Accept": "application/json, text/javascript; q=0.01"}
+});
 
-App = Ember.Application.create();
-
-App.PRODUCTS  = [ {title: "Krusty Burger\'s"},
-                  {title: "Burn\'s O\'s"} ]
-App.COLORS    = ['red', 'yellow', 'blue']
 
 App.Router.map(function() {
+  this.resource('products')
   this.route('about')
-  this.route('products')
-});
-
-App.AboutRoute = Ember.Route.extend({
-  model: function() {
-    return App.COLORS;
-  }
-});
-
-App.ProductsRoute = Ember.Route.extend({
-  model: function() {
-    return App.PRODUCTS;
-  }
 });
 
 
@@ -39,3 +31,28 @@ App.IndexController = Ember.Controller.extend({
   }.property()
 });
 
+// PRODUCTS //
+App.ProductsRoute = Ember.Route.extend({
+  model: function() {
+    return this.store.findAll('product');
+  }
+});
+
+App.Product = DS.Model.extend({
+  name:        DS.attr('string'),
+  description: DS.attr('string')
+});
+
+
+// About //
+App.AboutRoute = Ember.Route.extend({
+  model: function() {
+    return App.COLORS;
+  }
+});
+
+App.Color = DS.Model.extend({
+  title: DS.attr('string')
+});
+
+App.COLORS = ['red','yellow','blue']
