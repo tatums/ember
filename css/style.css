@@ -3,4 +3,8 @@
     margin: 20px;
 }
 
-.active{color:red;}
+.active{color: red;}
+
+body{
+  padding-top: 50px;
+}

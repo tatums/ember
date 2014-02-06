@@ -4,15 +4,17 @@ App = Ember.Application.create({
 
 //App.ApplicationAdapter = DS.FixtureAdapter.extend();
 App.ApplicationAdapter = DS.RESTAdapter.extend({
-  host: 'http://localhost:3002',
+  host: 'http://localhost:3001',
   namespace: 'api/v1',
   headers: {"Accept": "application/json, text/javascript; q=0.01"}
 });
 
 
 App.Router.map(function() {
-  this.resource('products')
-  this.route('about')
+  this.resource('products', function() {
+    this.resource('product', { path: '/:product_id' });
+  });
+  this.route('about');
 });
 
 
@@ -38,9 +40,24 @@ App.ProductsRoute = Ember.Route.extend({
   }
 });
 
+App.ProductRoute = Ember.Route.extend({
+  model: function(params) {
+    return this.store.find('product', params.product_id);
+  }
+});
+
+
 App.Product = DS.Model.extend({
   name:        DS.attr('string'),
-  description: DS.attr('string')
+  description: DS.attr('string'),
+  images: DS.hasMany('image', {async: true})
+});
+
+App.Image = DS.Model.extend({
+
+  url:              DS.attr('string'),
+  imageable_type:   DS.attr('string'),
+  product:          DS.belongsTo('product')
 });
 
 
